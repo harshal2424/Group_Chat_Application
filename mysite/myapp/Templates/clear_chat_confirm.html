@@ -1,0 +1,6 @@
+<h2>Are you sure you want to clear all chat history?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Yes, Clear Chat History</button>
+</form>
+<a href="{% url 'chat' %}">Cancel</a>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .signup-container { width: 400px; padding: 20px; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h2 { text-align: center; color: #333; }
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input, button { padding: 10px; border-radius: 5px; border: 1px solid #ddd; }
+        button { background-color: blue; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: darkblue; }
+        .login-link { text-align: center; margin-top: 10px; }
+        .login-link a { color: blue; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign Up</button>
+        </form>
+        <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+</body>
+</html>
+

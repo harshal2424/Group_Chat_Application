@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .container { width: 600px; padding: 20px; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        .profile-picture { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group button { padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .form-group button:hover { background-color: darkblue; }
+        .profile-info { margin-top: 20px; }
+        .profile-info p { margin: 5px 0; }
+        .profile-info strong { color: #333; }
+        .back-button { margin-top: 20px; display: inline-block; padding: 10px 20px; background-color: gray; color: white; border: none; border-radius: 5px; text-decoration: none; text-align: center; }
+        .back-button:hover { background-color: darkgray; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <!-- Display Profile Picture -->
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+            <img src="/static/harshal.png" alt="Default Avatar" class="profile-picture">
+        {% endif %}
+
+        <!-- Display Profile Information -->
+        <div class="profile-info">
+            <p><strong>Username:</strong> {{ username }}</p>
+            <p><strong>First Name:</strong> {{ first_name }}</p>
+            <p><strong>Last Name:</strong> {{ last_name }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Nickname:</strong> {{ nickname }}</p>
+        </div>
+
+        <!-- Profile Update Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="nickname">Nickname</label>
+                <input type="text" id="nickname" name="nickname" value="{{ profile.nickname }}">
+            </div>
+
+            <div class="form-group">
+                <label for="avatar">Profile Picture</label>
+                <input type="file" id="avatar" name="avatar">
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
+
+        <!-- Back Button -->
+        <a href="{% url 'chat' %}" class="back-button">Back to Chat</a>
+    </div>
+</body>
+</html>

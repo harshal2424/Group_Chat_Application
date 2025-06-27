@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic Chat App</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 0; }
+        .chat-container { width: 500px; margin: 50px auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); position: relative; }
+        .message { margin-bottom: 15px; display: flex; align-items: center; padding: 10px; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .timestamp { font-size: 0.8em; color: gray; margin-left: auto; }
+        img { vertical-align: middle; border-radius: 50%; margin-right: 10px; }
+        .profile-picture { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .profile-button {
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .profile-button:hover {
+            background-color: darkgreen;
+        }
+        .dropdown {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+        .dropdown-content a, .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: none;
+        }
+        .dropdown-content a:hover, .dropdown-content button:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown .dropbtn {
+            background-color: green;
+            color: white;
+            padding: 10px 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .dropdown:hover .dropbtn {
+            background-color: darkgreen;
+        }
+        .message-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            resize: none;
+        }
+        .message-form input[type="file"] {
+            padding: 5px;
+        }
+        .message-form button {
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .message-form button:hover {
+            background-color: darkblue;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .emoji-button {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.0/dist/index.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Authentication Section -->
+        {% if user.is_authenticated %}
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <!-- User Profile Picture -->
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Profile Picture" class="profile-picture">
+                {% else %}
+                    <img src="/static/harshal.png" alt="Default Avatar" class="profile-picture">
+                {% endif %}
+                <p style="margin-left: 10px;">Welcome, {{ user.username }}!</p>
+
+                <!-- Dropdown Menu -->
+                <div class="dropdown">
+                    <button class="dropbtn">Menu</button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'profile_view' %}">View Profile</a>
+                        <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; color:blue; cursor:pointer; width: 100%; text-align: left; padding: 12px 16px;">Logout</button>
+                        </form>
+                        <form method="POST" action="{% url 'clear_chat' %}" style="margin: 0;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; color:blue; cursor:pointer; width: 100%; text-align: left; padding: 12px 16px;">Clear Chat History</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>Please <a href="{% url 'login' %}">Login</a> or <a href="{% url 'signup' %}">Sign Up</a> to start chatting.</p>
+        {% endif %}
+
+        <h2>Simple Chat App</h2>
+
+        <!-- Message Display -->
+        <div>
+            {% for msg in messages %}
+                <div class="message">
+                    <!-- Sender's Profile Picture -->
+                    {% if msg.user.profile.avatar %}
+                        <img src="{{ msg.user.profile.avatar.url }}" alt="Profile Picture" class="profile-picture">
+                    {% else %}
+                        <img src="/static/harshal.png" alt="Default Avatar" class="profile-picture">
+                    {% endif %}
+                    <div>
+                        <strong>{{ msg.user.profile.nickname|default:msg.user.username }}:</strong> {{ msg.message }}
+                        <div class="timestamp">{{ msg.timestamp }}</div>
+                        {% if msg.file %}
+                            <img src="{{ msg.file.url }}" alt="Uploaded Image" class="uploaded-image">
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No messages yet.</p>
+            {% endfor %}
+        </div>
+
+        <hr>
+
+        <!-- Message Form -->
+        {% if user.is_authenticated %}
+            <form method="POST" enctype="multipart/form-data" class="message-form">
+                {% csrf_token %}
+                <textarea name="message" placeholder="Type a message..." rows="3" required></textarea>
+                <input type="file" name="file">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button type="button" class="emoji-button">😀</button>
+                    <button type="submit">Send</button>
+                </div>
+            </form>
+        {% else %}
+            <p>You need to log in to send messages.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.querySelector('.emoji-button');
+            const picker = new EmojiButton();
+            const textarea = document.querySelector('textarea[name="message"]');
+
+            picker.on('emoji', emoji => {
+                textarea.value += emoji;
+            });
+
+            button.addEventListener('click', () => {
+                picker.togglePicker(button);
+            });
+        });
+    </script>
+</body>
+</html>
