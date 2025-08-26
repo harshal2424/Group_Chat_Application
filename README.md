@@ -93,8 +93,6 @@ python -m venv myenv
 # Linux/macOS ▶ source myenv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
-# Or install manually
 pip install django flask
 
 # Migrate Django DB and create superuser (if needed)
@@ -108,6 +106,4 @@ python mysite/server.py
 python mysite/client.py
 # Open browser: http://localhost:5000/
 ```
-## 📄 License
-
-Distributed under the **MIT License**. See `LICENSE` for details.
+.
