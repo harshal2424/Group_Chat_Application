@@ -74,7 +74,6 @@ group-chat/
 │  └─ templates/     # HTML pages
 ├─ static/           # CSS / JS
 ├─ media/            # Uploaded files
-├─ requirements.txt  # Django, Pillow, etc.
 └─ manage.py
 ```
 
@@ -93,7 +92,8 @@ python -m venv myenv
 # Linux/macOS ▶ source myenv/bin/activate
 
 # Install dependencies
-pip install django flask
+pip install django
+pip install Pillow
 
 # Migrate Django DB and create superuser (if needed)
 python manage.py migrate
@@ -106,4 +106,3 @@ python mysite/server.py
 python mysite/client.py
 # Open browser: http://localhost:5000/
 ```
-.
